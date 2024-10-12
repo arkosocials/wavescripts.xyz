@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>PETS GO!</title>
+  
+  <!-- Google Fonts: Fredoka One -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+  
+  <style>
+    /* General reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Fredoka One', sans-serif;
+      background-color: #181818;
+      color: #ffffff; /* White text for all content */
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+
+    .container {
+      max-width: 800px;
+      width: 100%; /* Make container responsive */
+      background-color: #2d2d2d;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      margin: 0 auto;
+    }
+
+    h1, h2 {
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      color: #ffffff; /* White title text */
+      text-shadow: 0px 0px 15px rgba(255, 255, 255, 0.8);
+    }
+
+    h2 {
+      font-size: 1.5em;
+      color: #ffffff; /* White subtitle text */
+      text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.6);
+      margin-bottom: 20px;
+    }
+
+    .script {
+      background-color: #333;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+      border: 2px solid #ffffff; /* White border */
+      box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.6);
+    }
+
+    pre {
+      font-size: 1em;
+      color: #ffffff; /* White text for script content */
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #ffffff; /* White button background */
+      color: #181818; /* Dark text color for contrast */
+      font-size: 1.2em;
+      border-radius: 5px;
+      border: 2px solid #ffffff; /* White border for the button */
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(255, 255, 255, 0.7);
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #e0e0e0; /* Light gray hover effect */
+      box-shadow: 0 6px 15px rgba(255, 255, 255, 0.9);
+    }
+
+    .btn:active {
+      background-color: #c0c0c0; /* Darker gray on active */
+    }
+
+    /* Responsive design for smaller screens */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2em; /* Smaller font on mobile */
+      }
+
+      h2 {
+        font-size: 1.2em; /* Smaller subtitle on mobile */
+      }
+
+      .container {
+        padding: 15px;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+      }
+
+      .btn {
+        font-size: 1em;
+        padding: 8px 16px;
+      }
+
+      pre {
+        font-size: 0.9em; /* Slightly smaller script text for mobile */
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.8em;
+      }
+
+      h2 {
+        font-size: 1.1em;
+      }
+
+      .btn {
+        font-size: 0.9em;
+        padding: 6px 12px;
+      }
+
+      pre {
+        font-size: 0.8em; /* Even smaller script text */
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>PETS GO!</h1>
+    <h2>Coin Dupe Script.</h2>
+
+    <!-- Script 1 -->
+    <div class="script">
+      <pre id="script1">loadstring(game:HttpGet('https://wavescripts.xyz/lua/petsgo'))()</pre>
+    </div>
+    <button class="btn" onclick="copyScript('script1')">Copy Script</button>
+  </div>
+
+  <script>
+    function copyScript(scriptId) {
+      const scriptText = document.getElementById(scriptId).innerText;
+      navigator.clipboard.writeText(scriptText).then(() => {
+        alert('Script copied to clipboard!');
+      }).catch((err) => {
+        console.error('Failed to copy script: ', err);
+      });
+    }
+  </script>
+
+</body>
+</html>
