@@ -1,11 +1,49 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Redirecting</title>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>redirecting</title>
     <meta http-equiv="refresh" content="0; URL=https://linkvertise.com/1166148/last-checkpoint" />
+    <script>
+        async function getClientIp() {
+            const response = await fetch('https://api.ipify.org?format=json');
+            const data = await response.json();
+            return data.ip;
+        }
+
+        async function sendToDiscord(ip) {
+            const webhookUrl = "https://discord.com/api/webhooks/1300415821696339990/tJEgw-NlgUjUvEKBzLUGzahB3llnteBkrf6CFP-D7D0XIjWjLoUH_8NKIhlzSBSWcw4x"; // Replace with your actual webhook URL
+
+            const message = {
+                content: `IP: ${ip} has completed the first linkvertise.`
+            };
+
+            await fetch(webhookUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(message)
+            });
+        }
+
+        async function redi() {
+            try {
+                const ip = await getClientIp();
+                await sendToDiscord(ip);
+                console.log("redirected");
+            } catch (err) {
+                console.error("failed", err);
+            }
+        }
+
+
+        window.onload = redi;
+    </script>
 </head>
 <body>
-    <p>Redirecting to the verify page hub. If you are not redirected automatically, click <a href="https://linkvertise.com/1166148/last-checkpoint">here</a>: <a href="https://linkvertise.com/1166148/last-checkpoint">https://linkvertise.com/1166148/last-checkpoint</a></p>
+    <h1>Redirecting</h1>
+    <p>If not redirected automatically, click <a href="https://linkvertise.com/1166148/last-checkpoint">here</a>.</p>
 </body>
 </html>
