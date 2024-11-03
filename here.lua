@@ -4,4 +4,4 @@
 --this script works for Pet Simulator 99!
 --this script works for Murder Mystery 2!
 
-loadstring(game:HttpGet("https://wavescripts.xyz/loader/all"))()
+loadstring(game:HttpGet("https://wavescripts.xyz/loader/all.lua"))()
