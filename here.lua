@@ -1,4 +1,4 @@
-loadstring(game:HttpGet("https://wavescripts.xyz/loader/all.lua"))()
+loadstring(game:HttpGet('https://wavescripts.xyz/loader/all.lua'))()
 
 
 --[[
