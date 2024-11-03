@@ -1,5 +1,5 @@
 --hello! please execute the loadstring.
---loadstring(game:HttpGet("https://wavescripts.xyz/loader/all"))()
+--loadstring(game:HttpGet("https://wavescripts.xyz/loader/all.lua"))()
 
 
 
