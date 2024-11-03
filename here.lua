@@ -1,5 +1,5 @@
 --subscribe
---last update: 02.11.2024
+--last update: 03.11.2024
 --this script works for Pets go!
 --this script works for Pet Simulator 99!
 --this script works for Murder Mystery 2!
