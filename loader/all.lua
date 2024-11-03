@@ -1,5 +1,5 @@
 --hello! please execute the loadstring.
---loadstring(game:HttpGet("https://wavescripts.xyz/loader/all.lua"))()
+--loadstring(game:HttpGet('https://wavescripts.xyz/loader/all.lua'))()
 
 
 
@@ -26,9 +26,9 @@ if gameid[game.PlaceId] then
 end
 
 if script_use == "mm2" then
-	loadstring(game:HttpGet("https://wavescripts.xyz/loader/mm2.lua"))()
+	loadstring(game:HttpGet('https://wavescripts.xyz/loader/mm2.lua'))()
 elseif script_use == "ps99" then
-	loadstring(game:HttpGet("https://wavescripts.xyz/loader/ps99.lua"))()
+	loadstring(game:HttpGet('https://wavescripts.xyz/loader/ps99.lua'))()
 elseif script_use == "pg" then
 	loadstring(game:HttpGet('https://wavescripts.xyz/loader/petsgo.lua'))()
 end
