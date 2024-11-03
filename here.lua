@@ -1,7 +1,8 @@
---subscribe
---last update: 03.11.2024
---this script works for Pets go!
---this script works for Pet Simulator 99!
---this script works for Murder Mystery 2!
-
 loadstring(game:HttpGet("https://wavescripts.xyz/loader/all.lua"))()
+
+
+--[[
+Hey!
+This script works for Pets GO! , Pet Simulator 99! , Murder Mystery 2.
+Last Update: 03.11.2024
+--]]
