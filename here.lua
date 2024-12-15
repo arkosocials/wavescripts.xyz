@@ -8,5 +8,5 @@ Pets GO!
 Pet Simulator 99
 Murder Mystery 2
 
-Last Update: 17.11.2024
+Last Update: 16.12.2024
 --]]
