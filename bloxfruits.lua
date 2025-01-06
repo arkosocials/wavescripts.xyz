@@ -1,2 +1,2 @@
 --subscribe!
-loadstring(game:HttpGet('https://wavescripts.xyz/bloxfruits.lua'))()
+loadstring(game:HttpGet('https://wavescripts.xyz/loader/bloxfruits.lua'))()
