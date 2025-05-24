@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wavescripts Store</title>
+  <style>
+    :root {
+      --accent: #00ffd0;
+      --bg: #121212;
+      --surface: #1e1e1e;
+      --text: #f0f0f0;
+      --muted: #aaa;
+      --radius: 12px;
+      --transition: 0.3s ease;
+      --danger: #ff5f5f;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      font-family: "Segoe UI", sans-serif;
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 20px;
+    }
+
+    .card {
+      background: var(--surface);
+      padding: 30px;
+      border-radius: var(--radius);
+      text-align: center;
+      box-shadow: 0 0 15px rgba(0, 255, 208, 0.08);
+      width: 100%;
+      max-width: 400px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .card h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .price {
+      margin: 15px 0;
+      font-size: 18px;
+    }
+
+    .price del {
+      color: var(--muted);
+    }
+
+    .discount {
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    .btn {
+      background: var(--accent);
+      color: #000;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      margin-top: 20px;
+      transition: var(--transition);
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--surface);
+      padding: 30px;
+      border-radius: var(--radius);
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 0 25px rgba(0, 255, 208, 0.1);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin: 12px 0;
+      background: #2a2a2a;
+      border: 1px solid #333;
+      border-radius: var(--radius);
+      color: var(--text);
+    }
+
+    .copy-box {
+      background: #222;
+      border: 1px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 10px;
+      margin: 15px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      word-break: break-word;
+    }
+
+    .copy-btn {
+      background: var(--accent);
+      color: #000;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .message {
+      margin-top: 10px;
+      font-size: 14px;
+      color: var(--danger);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.98); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>Premium Access</h1>
+    <div class="price">
+      <del>25€</del> <strong>15€</strong> <span class="discount">-40%</span>
+    </div>
+    <button class="btn" onclick="openModal('modalStep1')">Buy Now</button>
+  </div>
+
+  <!-- Step 1: Email + Discord -->
+  <div class="modal" id="modalStep1">
+    <div class="modal-content">
+      <h2>Enter your details</h2>
+      <input type="email" id="email" placeholder="Your Email" />
+      <input type="text" id="discord" placeholder="Discord Username" />
+      <div id="messageBox" class="message"></div>
+      <button class="btn" onclick="goToPayment()">Next</button>
+    </div>
+  </div>
+
+  <!-- Step 2: Choose Payment -->
+  <div class="modal" id="modalStep2">
+    <div class="modal-content">
+      <h2>Choose Payment</h2>
+      <button class="btn" onclick="showPayPal()">PayPal</button>
+      <button class="btn" onclick="showCrypto()">Crypto</button>
+    </div>
+  </div>
+
+  <!-- Step 3: Final Step -->
+  <div class="modal" id="modalFinal">
+    <div class="modal-content" id="finalContent"></div>
+  </div>
+
+  <script>
+    function openModal(id) {
+      document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function isValidEmail(email) {
+      // Basic email format check
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return regex.test(email);
+    }
+
+    function goToPayment() {
+      const email = document.getElementById('email').value.trim();
+      const discord = document.getElementById('discord').value.trim();
+      const msg = document.getElementById('messageBox');
+
+      if (!email || !discord) {
+        msg.textContent = "Please fill in both fields.";
+        return;
+      }
+
+      if (!isValidEmail(email)) {
+        msg.textContent = "Please enter a valid email address.";
+        return;
+      }
+
+      msg.textContent = "";
+      openModal('modalStep2');
+    }
+
+    function showPayPal() {
+      const email = document.getElementById('email').value.trim();
+      const html = `
+        <h2>Pay with PayPal</h2>
+        <p>Send <strong>15€</strong> to:</p>
+        <div class="copy-box">
+          <span>@WavescriptsPremium</span>
+          <button class="copy-btn" onclick="copyText('@WavescriptsPremium')">Copy</button>
+        </div>
+        <p>Use <strong>Friends & Family</strong></p>
+        <p>Reason: <strong>${email}</strong></p>
+      `;
+      document.getElementById('finalContent').innerHTML = html;
+      openModal('modalFinal');
+    }
+
+    function showCrypto() {
+      const email = document.getElementById('email').value.trim();
+      const html = `
+        <h2>Choose Crypto</h2>
+        <select id="cryptoSelect" onchange="showCryptoAddress()">
+          <option value="">Select...</option>
+          <option value="ETH">Ethereum (ETH)</option>
+          <option value="BTC">Bitcoin (BTC)</option>
+          <option value="LTC">Tether (LTC)</option>
+        </select>
+        <div id="cryptoOutput"></div>
+      `;
+      document.getElementById('finalContent').innerHTML = html;
+      openModal('modalFinal');
+    }
+
+    function showCryptoAddress() {
+      const type = document.getElementById('cryptoSelect').value;
+      const email = document.getElementById('email').value.trim();
+      const addresses = {
+        ETH: "0xD0f5996d0d876D20B57080814B946461a746f96d",
+        BTC: "bc1qh8cm3s688sw32acmzxru4rx62w2gxe3vrxqtk8",
+        LTC: "ltc1q3e85jg7lxgvrqd4tafy4e9c85mdnp494f2n2cy"
+      };
+      if (!type) return;
+      const addr = addresses[type];
+      document.getElementById('cryptoOutput').innerHTML = `
+        <p>Send <strong>15€</strong> in ${type} to:</p>
+        <div class="copy-box">
+          <span>${addr}</span>
+          <button class="copy-btn" onclick="copyText('${addr}')">Copy</button>
+        </div>
+        <p>Reason: <strong>${email}</strong></p>
+                        <p>If you want to buy with another Crypto currency, then please contant the owner</p>
+      `;
+    }
+
+    function copyText(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        // Show copied message below
+        const finalContent = document.getElementById('finalContent');
+        const msgDiv = document.createElement('div');
+        msgDiv.textContent = 'Copied to clipboard!';
+        msgDiv.style.color = 'var(--accent)';
+        msgDiv.style.marginTop = '10px';
+        msgDiv.classList.add('message');
+        finalContent.appendChild(msgDiv);
+        setTimeout(() => {
+          finalContent.removeChild(msgDiv);
+        }, 2000);
+      });
+    }
+
+    // Close modals when clicking outside modal content
+    window.onclick = e => {
+      if (e.target.classList.contains("modal")) {
+        e.target.classList.remove("active");
+        document.getElementById('messageBox').textContent = ""; // Clear errors when modal closes
+      }
+    };
+  </script>
+</body>
+</html>
