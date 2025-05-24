@@ -75,14 +75,20 @@
       color: #000;
     }
 
+    .products-container {
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
     .card {
       background: var(--surface);
       padding: 30px;
       border-radius: var(--radius);
       text-align: center;
       box-shadow: 0 0 15px rgba(0, 255, 208, 0.08);
-      width: 100%;
-      max-width: 400px;
       animation: fadeIn 0.5s ease;
     }
 
@@ -249,13 +255,8 @@
     </div>
   </header>
 
-  <div class="card">
-    <h1>Premium Access</h1>
-    <div class="price">
-      <del>25€</del> <strong>15€</strong> <span class="discount">-40%</span>
-    </div>
-    <div class="purchase-count">🔥 <strong>224</strong> purchases</div>
-    <button class="btn" onclick="openModal('modalStep1')">Buy Now</button>
+  <div class="products-container" id="productsContainer">
+    <!-- Products will be rendered here -->
   </div>
 
   <!-- Reviews section -->
@@ -313,13 +314,87 @@
   </div>
 
   <script>
+    // Products array — add more products here easily
+    const products = [
+      {
+        id: 1,
+        title: "Premium Access",
+        price: 15,
+        originalPrice: 25,
+        discountPercent: 40,
+        purchases: 224
+      },
+      {
+        id: 2,
+        title: "1000 Robux Code",
+        price: 10,
+        originalPrice: 20,
+        discountPercent: 50,
+        purchases: 150
+      },
+      {
+        id: 3,
+        title: "Wave Executor [Lifetime Key]",
+        price: 20,
+        originalPrice: 100,
+        discountPercent: 80,
+        purchases: 31
+      },
+      {
+        id: 4,
+        title: "Knrl [Lifetime Key]",
+        price: 15,
+        originalPrice: 100,
+        discountPercent: 85,
+        purchases: 56
+      },
+      {
+        id: 5,
+        title: "Delta [Lifetime Key]",
+        price: 15,
+        originalPrice: 100,
+        discountPercent: 85,
+        purchases: 23
+      }
+    ];
+
+    let selectedProduct = null;
+
+    function renderProducts() {
+      const container = document.getElementById('productsContainer');
+      container.innerHTML = '';
+      products.forEach(product => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <h1>${product.title}</h1>
+          <div class="price">
+            <del>${product.originalPrice}€</del> 
+            <strong>${product.price}€</strong> 
+            <span class="discount">-${product.discountPercent}%</span>
+          </div>
+          <div class="purchase-count">🔥 <strong>${product.purchases}</strong> purchases</div>
+          <button class="btn" onclick="openPurchaseModal(${product.id})">Buy Now</button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function openPurchaseModal(productId) {
+      selectedProduct = products.find(p => p.id === productId);
+      // Reset inputs & message
+      document.getElementById('email').value = '';
+      document.getElementById('discord').value = '';
+      document.getElementById('messageBox').textContent = '';
+      openModal('modalStep1');
+    }
+
     function openModal(id) {
       document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
       document.getElementById(id).classList.add('active');
     }
 
     function isValidEmail(email) {
-      // Basic email format check
       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return regex.test(email);
     }
@@ -347,7 +422,7 @@
       const email = document.getElementById('email').value.trim();
       const html = `
         <h2>Pay with PayPal</h2>
-        <p>Send <strong>15€</strong> to:</p>
+        <p>Send <strong>${selectedProduct.price}€</strong> to:</p>
         <div class="copy-box">
           <span>@WavescriptsPremium</span>
           <button class="copy-btn" onclick="copyText('@WavescriptsPremium')">Copy</button>
@@ -389,7 +464,7 @@
       }
       const addr = addresses[type];
       document.getElementById('cryptoOutput').innerHTML = `
-        <p>Send <strong>15€</strong> in ${type} to:</p>
+        <p>Send <strong>${selectedProduct.price}€</strong> in ${type} to:</p>
         <div class="copy-box">
           <span>${addr}</span>
           <button class="copy-btn" onclick="copyText('${addr}')">Copy</button>
@@ -401,7 +476,6 @@
 
     function copyText(text) {
       navigator.clipboard.writeText(text).then(() => {
-        // Show copied message below
         const finalContent = document.getElementById('finalContent');
         const msgDiv = document.createElement('div');
         msgDiv.textContent = 'Copied to clipboard!';
@@ -419,9 +493,13 @@
     window.onclick = e => {
       if (e.target.classList.contains("modal")) {
         e.target.classList.remove("active");
-        document.getElementById('messageBox').textContent = ""; // Clear errors when modal closes
+        document.getElementById('messageBox').textContent = ""; // Clear errors
       }
     };
+
+    // Render products on page load
+    renderProducts();
+
   </script>
 </body>
 </html>
