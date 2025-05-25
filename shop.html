@@ -301,6 +301,14 @@
       <h2>Enter your details</h2>
       <input type="email" id="email" placeholder="Your Email" />
       <input type="text" id="discord" placeholder="Discord Username" />
+      <!-- Coupon input -->
+      <input type="text" id="couponCode" placeholder="Enter coupon code (optional)" />
+      <div id="couponMessage" class="message" style="color: var(--accent);
+      margin-bottom: 10px;"></div>
+      <div style="text-align: center; margin: 10px 0;">
+        I read and agreed to the 
+        <span style="color: var(--accent); text-decoration: underline; cursor: pointer;" onclick="showPolicies()">store policies</span>.
+      </div>
       <div id="messageBox" class="message"></div>
       <button class="btn" onclick="goToPayment()">Next</button>
     </div>
@@ -319,8 +327,27 @@
   <div class="modal" id="modalFinal">
     <div class="modal-content" id="finalContent"></div>
   </div>
+  
+    <!-- Store Policies Modal -->
+  <div class="modal" id="policiesModal">
+    <div class="modal-content">
+      <h2>Store Policies</h2>
+      <p>By purchasing, you agree that no refunds are available after purchase.</p>
+      <p>You must not distribute or resell any products.</p>
+      <button class="btn" onclick="closePolicies()">Close</button>
+    </div>
+  </div>
 
   <script>
+  
+  function showPolicies() {
+  openModal('policiesModal');
+}
+
+function closePolicies() {
+  document.getElementById('policiesModal').classList.remove('active');
+}
+
     // Products array — add more products here easily
     const products = [
       {
@@ -353,7 +380,7 @@
         price: 15,
         originalPrice: 100,
         discountPercent: 85,
-        purchases: 56
+        purchasers: 56
       },
       {
         id: 5,
@@ -366,6 +393,13 @@
     ];
 
     let selectedProduct = null;
+    let couponDiscount = 0;
+
+    // Coupons → fixed euro savings
+    const coupons = {
+      WAVESAVE: 5,
+      SAVE3: 3
+    };
 
     function renderProducts() {
       const container = document.getElementById('productsContainer');
@@ -376,8 +410,8 @@
         card.innerHTML = `
           <h1>${product.title}</h1>
           <div class="price">
-            <del>${product.originalPrice}€</del> 
-            <strong>${product.price}€</strong> 
+            <del>${product.originalPrice}€</del>
+            <strong>${product.price}€</strong>
             <span class="discount">-${product.discountPercent}%</span>
           </div>
           <div class="purchase-count">🔥 <strong>${product.purchases}</strong> purchases</div>
@@ -389,9 +423,10 @@
 
     function openPurchaseModal(productId) {
       selectedProduct = products.find(p => p.id === productId);
-      // Reset inputs & message
       document.getElementById('email').value = '';
-      document.getElementById('discord').value = '';
+      document.getElementById('discord').value = ''; 
+      document.getElementById('couponCode').value = ''; 
+      document.getElementById('couponMessage').textContent = '';
       document.getElementById('messageBox').textContent = '';
       openModal('modalStep1');
     }
@@ -406,30 +441,39 @@
       return regex.test(email);
     }
 
+    function validateCoupon() {
+      const code = document.getElementById('couponCode').value.trim().toUpperCase();
+      couponDiscount = coupons[code] || 0;
+      const msgEl = document.getElementById('couponMessage');
+      if (!code) { msgEl.textContent = ''; return; }
+      if (couponDiscount > 0) {
+        msgEl.style.color = 'var(--accent)';
+        msgEl.textContent = `Coupon saved €${couponDiscount}!`;
+      } else {
+        msgEl.style.color = 'var(--danger)';
+        msgEl.textContent = 'Invalid coupon code';
+      }
+    }
+
+    document.getElementById('couponCode').addEventListener('input', validateCoupon);
+
     function goToPayment() {
       const email = document.getElementById('email').value.trim();
       const discord = document.getElementById('discord').value.trim();
       const msg = document.getElementById('messageBox');
-
-      if (!email || !discord) {
-        msg.textContent = "Please fill in both fields.";
-        return;
-      }
-
-      if (!isValidEmail(email)) {
-        msg.textContent = "Please enter a valid email address.";
-        return;
-      }
-
-      msg.textContent = "";
+      if (!email || !discord) { msg.textContent = "Please fill in both fields."; return; }
+      if (!isValidEmail(email)) { msg.textContent = "Please enter a valid email address."; return; }
+      msg.textContent = '';
+      validateCoupon();
       openModal('modalStep2');
     }
 
     function showPayPal() {
       const email = document.getElementById('email').value.trim();
+      const finalPrice = Math.max(selectedProduct.price - couponDiscount, 0);
       const html = `
         <h2>Pay with PayPal</h2>
-        <p>Send <strong>${selectedProduct.price}€</strong> to:</p>
+        <p>Send <strong>${finalPrice}€</strong> to:</p>
         <div class="copy-box">
           <span>@WavescriptsPremium</span>
           <button class="copy-btn" onclick="copyText('@WavescriptsPremium')">Copy</button>
@@ -443,6 +487,7 @@
 
     function showCrypto() {
       const email = document.getElementById('email').value.trim();
+      const finalPrice = Math.max(selectedProduct.price - couponDiscount, 0);
       const html = `
         <h2>Choose Crypto</h2>
         <select id="cryptoSelect" onchange="showCryptoAddress()">
@@ -460,24 +505,20 @@
     function showCryptoAddress() {
       const type = document.getElementById('cryptoSelect').value;
       const email = document.getElementById('email').value.trim();
-      const addresses = {
+      const addrMap = {
         ETH: "0xD0f5996d0d876D20B57080814B946461a746f96d",
         BTC: "bc1qh8cm3s688sw32acmzxru4rx62w2gxe3vrxqtk8",
         LTC: "ltc1q3e85jg7lxgvrqd4tafy4e9c85mdnp494f2n2cy"
       };
-      if (!type) {
-        document.getElementById('cryptoOutput').innerHTML = '';
-        return;
-      }
-      const addr = addresses[type];
+      if (!type) { document.getElementById('cryptoOutput').innerHTML = ''; return; }
+      const finalPrice = Math.max(selectedProduct.price - couponDiscount, 0);
       document.getElementById('cryptoOutput').innerHTML = `
-        <p>Send <strong>${selectedProduct.price}€</strong> in ${type} to:</p>
+        <p>Send <strong>${finalPrice}€</strong> in ${type} to:</p>
         <div class="copy-box">
-          <span>${addr}</span>
-          <button class="copy-btn" onclick="copyText('${addr}')">Copy</button>
+          <span>${addrMap[type]}</span>
+          <button class="copy-btn" onclick="copyText('${addrMap[type]}')">Copy</button>
         </div>
         <p>Reason: <strong>${email}</strong></p>
-        <p>If you want to buy with another Crypto currency, then please contact the owner.</p>
       `;
     }
 
@@ -490,21 +531,17 @@
         msgDiv.style.marginTop = '10px';
         msgDiv.classList.add('message');
         finalContent.appendChild(msgDiv);
-        setTimeout(() => {
-          finalContent.removeChild(msgDiv);
-        }, 2000);
+        setTimeout(() => finalContent.removeChild(msgDiv), 2000);
       });
     }
 
-    // Close modals when clicking outside modal content
     window.onclick = e => {
       if (e.target.classList.contains("modal")) {
         e.target.classList.remove("active");
-        document.getElementById('messageBox').textContent = ""; // Clear errors
+        document.getElementById('messageBox').textContent = "";
       }
     };
 
-    // Render products on page load
     renderProducts();
 
   </script>
